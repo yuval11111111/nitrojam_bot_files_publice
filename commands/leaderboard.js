@@ -47,20 +47,9 @@ const {
     TextChannel,
     Collector,
     Collection,
-    PermissionFlagsBits,
 } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('nickname')
-        .setDescription(`change someone's nickname`)
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageNicknames)
-        .addUserOption(option =>
-            option.setName('member')
-            .setRequired(true)
-            .setDescription('choose a member'))
-        .addStringOption(option =>
-            option.setName(`setname`)
-            .setRequired(true)
-            .setDescription(`set member's nickname`)
-        ),
+        .setName('leaderboard')
+        .setDescription('to see the top 10 users'),
 };

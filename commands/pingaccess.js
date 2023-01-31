@@ -51,16 +51,22 @@ const {
 } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('nickname')
-        .setDescription(`change someone's nickname`)
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageNicknames)
-        .addUserOption(option =>
-            option.setName('member')
-            .setRequired(true)
-            .setDescription('choose a member'))
+        .setName('ping-access')
+        .setDescription(`to allow to someone to ping nitro `)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
         .addStringOption(option =>
-            option.setName(`setname`)
-            .setRequired(true)
-            .setDescription(`set member's nickname`)
-        ),
+            option.setName(`action`)
+            .setDescription(`to add access or to remove access`)
+            .addChoices({
+                name: `add`,
+                value: `add`
+            }, {
+                name: `remove`,
+                value: `remove`
+            })
+            .setRequired(true))
+        .addUserOption(option =>
+            option.setName(`member`)
+            .setDescription(`the member want to do the action too`)
+            .setRequired(true)),
 };

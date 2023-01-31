@@ -59,6 +59,7 @@ const {
 } = Discord
 const dotenv = require('dotenv') //const .env data = require file 
 const fs = require('fs');
+const token = require('../nitrojam_bot/json_files/token.json');
 const {
     fsync,
     fsyncSync,
@@ -99,7 +100,7 @@ const {
     Canvas,
     registerFont
 } = require('canvas')
-const api = require(`./API.json`)
+const api = require(`../nitrojam_bot/json_files/API.json`)
 const SteamAPI = require('steamapi');
 const API = process.env.steamAPI
 const steam = new SteamAPI(api.steam);
@@ -128,9 +129,9 @@ const client = new Discord.Client //create a new client to the bot to use
 })
 //slash commands
 const commands = [];
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('../nitrojam_bot/commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const command = require(`../nitrojam_bot/commands/${file}`);
     commands.push(command.data);
 }
 (async () => {
@@ -140,7 +141,7 @@ for (const file of commandFiles) {
         // The put method is used to fully refresh all commands in the guild with the current set
         const rest = new REST({
             version: '10'
-        }).setToken(process.env.TOKEN);
+        }).setToken(token.token);
         const data = rest.put(
             Routes.applicationGuildCommands('897495641956175884', '897154008228180048' && `1028779829799157932`), {
                 body: commands
@@ -174,7 +175,7 @@ client.setMaxListeners(1000) //max listeners allowed
 //bot commands
 //curses
 client.on('messageCreate', (message) => {
-    readFile("./curse.json", "utf8", (err, allow) => {
+    readFile("../nitrojam_bot/json_files/curse.json", "utf8", (err, allow) => {
         if (message.content.toLowerCase().includes('nigga') || message.content.toLowerCase().includes('a bitch') || message.content.toLowerCase().includes('nigger') || message.content.toLowerCase().includes('test-keyword') || message.content.toLowerCase().includes('ניגה') || message.content.toLowerCase().includes('ניגר') || message.content.toLowerCase().includes('בן של זונה')) {
             if (message.guild.id == `897154008228180048`) {
                 let Member = message.member
@@ -401,13 +402,13 @@ client.on('interactionCreate', async interaction => {
                                 setTimeout(point, 1500)
 
                                 function point() {
-                                    readFile("./points.json", "utf8", (err, points) => {
+                                    readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                                         let userPoints = points.split(message.author.id).slice(1, 2).toString()
                                         let num = parseInt(userPoints.split(' ').slice(2, 3))
                                         let reword = num + 150
                                         console.log(`test:` + [num], [reword])
                                         let new_points = points.toString().replace(`${message.author.id} = ${num}`, `${message.author.id} = ${reword}`).toString()
-                                        writeFileSync('./points.json', new_points)
+                                        writeFileSync('../nitrojam_bot/json_files/points.json', new_points)
                                     })
                                 }
                                 message.edit({
@@ -432,13 +433,13 @@ client.on('interactionCreate', async interaction => {
                                 setTimeout(point, 1500)
 
                                 function point() {
-                                    readFile("./points.json", "utf8", (err, points) => {
+                                    readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                                         let userPoints = points.split(message.author.id).slice(1, 2).toString()
                                         let num = parseInt(userPoints.split(' ').slice(2, 3))
                                         let reword = num + 150
                                         console.log(`test:` + [num], [reword])
                                         let new_points = points.toString().replace(`${message.author.id} = ${num}`, `${message.author.id} = ${reword}`).toString()
-                                        writeFileSync('./points.json', new_points)
+                                        writeFileSync('../nitrojam_bot/json_files/points.json', new_points)
                                     })
                                 }
                                 message.edit({
@@ -493,10 +494,12 @@ client.on('guildMemberAdd', (member, message) => {
             embeds: [embed4]
         }).catch(console.error)
         member.roles.remove('897154008228180052').catch(console.error) //remove member's role
-        member.roles.remove('897154008228180054').catch(console.error) //remove member's role  
+        member.roles.remove('897154008228180054').catch(console.error) //remove member's role
+
         member.guild.channels.cache.get('967808947530661910').setName(`❄️｜members: ${member.guild.memberCount - BotCount}`).catch(console.error) //server's member's count room's name changer
         console.log(`member count is ${member.guild.memberCount - BotCount} members`) //log message
         member.roles.add(`986941408676040734`).catch(console.error)
+
     } else if (member.guild.id == `1028779829799157932`) {
         const WelcomeChannelid = '1028779831040671859' //welcome channel id
         let Verify = client.channels.cache.find(channel => channel.id === '1028779831040671860') //get channel "verify"
@@ -529,9 +532,11 @@ client.on('guildMemberAdd', (member, message) => {
             embeds: [embed4]
         }).catch(console.error)
         member.roles.remove('1028779829836906616').catch(console.error) //remove member's role
-        member.roles.remove('1028779829836906615').catch(console.error) //remove member's role  
+        member.roles.remove('1028779829836906615').catch(console.error) //remove member's role
+
         member.guild.channels.cache.get('1028779831040671862').setName(`❄️｜אנשים: ${member.guild.memberCount - BotCount2}`).catch(console.error) //server's member's count room's name changer
         console.log(`member count is ${member.guild.memberCount - BotCount2} members`) //log message
+
         member.roles.add(`1028779829799157938`).catch(console.error)
     }
 })
@@ -591,7 +596,7 @@ client.on("guildMemberUpdate", (member, newMember) => {
 client.on('messageCreate', (message) => {
     let channel = message.channel.type
     if (channel !== ChannelType.DM) {
-        readFile("./ping_access.json", "utf8", (err, ping) => {
+        readFile("../nitrojam_bot/json_files/ping_access.json", "utf8", (err, ping) => {
             if (!ping.includes(message.author.id)) {
                 if (message.channel.id == `1028779831581745303` || message.channel.id == `966723150115135488`) {
                     if (message.content.includes(`<@450003891472564234>`)) return message.delete().then(message.author.send(`please do not ping NitroJam`).catch(console.error)).catch(console.error)
@@ -664,86 +669,17 @@ client.on('messageCreate', (message) => {
 //add role
 //alert roles
 client.on('interactionCreate', (interaction) => {
-    if (interaction.isButton() && interaction.customId == `live alerts`) {
-        if (interaction.guild.id == `897154008228180048`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`979855723083202660`)
-        } else if (interaction.guild.id == `1028779829799157932`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`1028779829836906612`)
-        }
-    }
-    if (interaction.isButton() && interaction.customId == `server update`) {
-        if (interaction.guild.id == `897154008228180048`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`979858693489319997`)
-        } else if (interaction.guild.id == `1028779829799157932`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`1028779829836906611`)
-        }
-    }
-    if (interaction.isButton() && interaction.customId == `event alerts`) {
-        if (interaction.guild.id == `897154008228180048`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`980155247307661332`)
-        } else if (interaction.guild.id == `1028779829799157932`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.add(`1028779829836906610`)
-        }
-    }
-    if (interaction.isButton() && interaction.customId == `hebrew`) {
+    if (interaction.isSelectMenu() && interaction.customId == `add`) {
+        let role = interaction.values[0];
         const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`1000038063260573796`)
-    }
-    if (interaction.isButton() && interaction.customId == `tiktok alerts`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`1041659015970701332`)
-    }
-    //pronouns roles
-    if (interaction.isButton() && interaction.customId == `he`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`984085473804816425`)
-    }
-    if (interaction.isButton() && interaction.customId == `she`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`984085622954270731`)
-    }
-    if (interaction.isButton() && interaction.customId == `they`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`984085724573872148`)
-    }
-    if (interaction.isButton() && interaction.customId == `other`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        User.roles.add(`984088884583497838`)
+        User.roles.add(role).catch(console.error)
+        console.log(role)
     }
     //remove roles
-    if (interaction.isButton() && interaction.customId == `remove`) {
-        if (interaction.guild.id == `897154008228180048`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.remove(`979855723083202660`)
-        } else if (interaction.guild.id == `1028779829799157932`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.remove(`1028779829836906612`)
-        }
-    }
-    if (interaction.isButton() && interaction.customId == `remove2`) {
-        if (interaction.guild.id == `897154008228180048`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.remove(`979858693489319997`)
-        } else if (interaction.guild.id == `1028779829799157932`) {
-            const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-            User.roles.remove(`1028779829836906611`)
-        }
-    }
-    if (interaction.isButton() && interaction.customId == `remove3`) {
+    if (interaction.isSelectMenu() && interaction.customId == `remove`) {
+        let role = interaction.values[0];
         const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        let roleid = (interaction.guild.id == `897154008228180048`) ? `980155247307661332` : `1028779829836906610`
-        User.roles.remove(roleid)
-    }
-    if (interaction.isButton() && interaction.customId == `remove4`) {
-        const User = interaction.guild.members.cache.find(member => member.id == interaction.user.id)
-        let roleid = (interaction.guild.id == `897154008228180048`) ? `1000038063260573796` : `1041659015970701332`
-        User.roles.remove(roleid)
+        User.roles.remove(role)
     }
 })
 //log
@@ -985,28 +921,34 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 })
 //role created log
 client.on('roleCreate', (role) => {
-    const Role = role.guild.roles.cache.map(role => role.permissions.toArray()).pop().toString().replace(/[_]/g, " ").replace(/[,]/g, ", ").toLowerCase()
+    let Role = role.guild.roles.cache.map(role => role.permissions.toArray()).pop().toString().replace(/[_]/g, " ").replace(/[,]/g, ", ").toLowerCase()
+    Role = (!Role) ? `none` : Role
     let role_name = role.name
     role_name = (role_name == null || role_name == undefined) ? `undefined` : role.name
-    let embed = new Discord.EmbedBuilder() //message logs content
-        .setTitle(`**Role created**`)
-        .setColor(0xe7dd26)
-        .addFields({
-            name: "role",
-            value: `**${role_name}**`
-        })
-        .addFields({
-            name: "Permissions",
-            value: `${Role}`
-        })
-        .setFooter({
-            text: `Role ID:${role.id}`
-        });
-    let id = (role.guild.id == `897154008228180048`) ? '897154010543423610' : `1028779833024577643`
-    if (Role == undefined || role.id == undefined) return;
-    else return client.channels.cache.find(channel => channel.id === id).send(({
-        embeds: [embed]
-    })) //server's log message
+    setTimeout(() => {
+        if (!Role || Role == undefined || role.id == undefined) return;
+        else {
+            let embed = new Discord.EmbedBuilder() //message logs content
+                .setTitle(`**Role created**`)
+                .setColor(0xe7dd26)
+                .addFields({
+                    name: "role",
+                    value: `**${role_name}**`
+                })
+                .addFields({
+                    name: "Permissions",
+                    value: `${Role}`
+                })
+                .setFooter({
+                    text: `Role ID:${role.id}`
+                });
+            let id = (role.guild.id == `897154008228180048`) ? '897154010543423610' : `1028779833024577643`
+            let c = client.channels.cache.find(channel => channel.id === id)
+            c.send(({
+                embeds: [embed]
+            })) //server's log message
+        }
+    }, 1000)
 })
 //role removed log
 client.on('roleDelete', (role) => {
@@ -1089,7 +1031,7 @@ client.on('messageCreate', (message) => {
 })
 client.on('interactionCreate', (interaction) => {
     if (interaction.isButton() && interaction.customId == `xMod`) {
-        readFile("./fnf.json", "utf8", (err, users) => {
+        readFile("../nitrojam_bot/json_files/fnf.json", "utf8", (err, users) => {
             let user = users.includes(interaction.user.id)
             console.log(user)
             if (user == `true` || user == true) {
@@ -1137,10 +1079,10 @@ client.once('ready', () => {
         if (time == `6--01-19-0PM`) {
             client.channels.cache.find(channel => channel.name === '🔐↣｜owners-chat').send(`היקר<@450003891472564234>\nאני מכיר אותך כבר מעל 4 שנים\nאני עברתי איתך ירידות ועליות וגם כשההיתי על סף מוות אתה עדיין עשית לי את היום\nבאמת שאין עליך\nמזל טוב על יום הולדות ${age} ועד 120\nאוהב אותך ומאחל לך כל טוב שבעולם יובל`) //server's log message
         }
-        if (dd <= 5) {
+        if (dd == 2 || dd == 3 || dd == 4 || dd == 5) {
             if (hh == 08 && session == `PM` && mm == 00 && ss == 0) {
                 let channel = client.channels.cache.find(ch => ch.id == `1028987660540325918`)
-                channel.send(`נייטרו כרגע בלייב בטיקטוק בקישור https://www.tiktok.com/@nitrojam_/live <@&1041659015970701332> \n ||זה הודעה אוטומטית הבנויה על שעון כבקשת נייטרו אז אם אין לייב סליחה על התיוג||`)
+                channel.send(`נייטרו כרגע בלייב בטיקטוק בקישור https://www.tiktok.com/@nitrojam_/live <@&1028779829836906612> @everyone <@&1041659015970701332> \n ||זה הודעה אוטומטית הבנויה על שעון כבקשת נייטרו אז אם אין לייב סליחה על התיוג||`)
             }
         }
         if (hh == 01 && session == `PM` && mm == `38` && ss == `0`) {
@@ -1154,7 +1096,7 @@ client.once('ready', () => {
 //tickets
 //create ticket
 client.on("messageReactionAdd", (reaction, user) => { // When a reaction is added
-    readFile("./ticket.json", "utf8", (err, points) => {
+    readFile("../nitrojam_bot/json_files/ticket.json", "utf8", (err, points) => {
         if (user.bot) return; // If the user who reacted is a bot, return
         if (reaction.emoji.name !== "✅") return;
         if (reaction.message.channel.id !== `990866225833857054`) return;
@@ -1184,14 +1126,14 @@ client.on("messageReactionAdd", (reaction, user) => { // When a reaction is adde
 })
 
 client.on("messageReactionAdd", (reaction, user) => { // When a reaction is added
-    readFile("./ticket.json", "utf8", (err, points) => {
+    readFile("../nitrojam_bot/json_files/ticket.json", "utf8", (err, points) => {
         if (user.bot) return; // If the user who reacted is a bot, return
         if (reaction.emoji.name !== "✅") return;
         if (reaction.message.channel.id == `990866225833857054` || reaction.message.channel.id == `1028779832328323208`) {
             let num = parseInt(points);
             let num2 = num + 1
             console.log([num], [num2])
-            writeFileSync('./ticket.json', `${num2}`)
+            writeFileSync('../nitrojam_bot/json_files/ticket.json', `${num2}`)
         }
     })
 })
@@ -1243,21 +1185,21 @@ client.on('messageCreate', (message) => {
     let channel = message.channel.name
     channel = (channel == undefined) ? ChannelType.DM : channel
     let Message = `${channel}> ${message.author.username}> ${message.content}`
-    let file = (fetch('./logs.json')).then(x => x.type == ``).catch(console.error)
-    readFile("./logs.json", "utf8", (err, jsonString) => {
+    let file = (fetch('../nitrojam_bot/json_files/logs.json')).then(x => x.type == ``).catch(console.error)
+    readFile("../nitrojam_bot/json_files/logs.json", "utf8", (err, jsonString) => {
         if (err) {
             console.log("File read failed:", err);
             return;
         }
         if (message.contect !== `${Command}chatlogs`) {
-            writeFileSync('./logs.json', `${jsonString}` + `\n` + Message, {
+            writeFileSync('../nitrojam_bot/json_files/logs.json', `${jsonString}` + `\n` + Message, {
                 encoding: 'utf8',
                 flag: 'w'
             })
         }
     });
     if (message.content == `${Command}chatlogs`) {
-        readFile("./logs.json", "utf8", (err, jsonString) => {
+        readFile("../nitrojam_bot/json_files/logs.json", "utf8", (err, jsonString) => {
             if (err) {
                 console.log("File read failed:", err);
                 return;
@@ -1269,14 +1211,14 @@ client.on('messageCreate', (message) => {
 //points command
 client.on('messageCreate', (message) => {
     if (message.channel.type !== ChannelType.DM) {
-        readFile("./points.json", "utf8", (err, jsonString) => {
+        readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, jsonString) => {
             if (err) {
                 console.log("File read failed:", err);
                 return;
             }
             if (message.author.bot) return;
             if (!jsonString.includes(message.author.id)) {
-                writeFileSync('./points.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` = ` + `0`, {
+                writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` = ` + `0`, {
                     encoding: 'utf8',
                     flag: 'w'
                 })
@@ -1294,7 +1236,7 @@ client.on('messageCreate', (message) => {
                 console.log(num)
                 console.log(newPoints)
                 let newUser = jsonString.replace(`${message.author.id} = ${num}`, `${message.author.id} = ${newPoints}`)
-                writeFileSync('./points.json', `` + `${newUser}`, {
+                writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${newUser}`, {
                     encoding: 'utf8',
                     flag: 'w'
                 })
@@ -1306,8 +1248,8 @@ client.on('messageCreate', (message) => {
 //rank system
 client.on('messageCreate', (message) => {
     if (message.channel.type !== ChannelType.DM) {
-        let file = (message.guild.id == `897154008228180048`) ? './rank.json' : './rank2.json'
-        readFile("./channel.json", "utf8", (err, channels) => {
+        let file = (message.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/rank.json' : '../nitrojam_bot/json_files/rank2.json'
+        readFile("../nitrojam_bot/json_files/channel.json", "utf8", (err, channels) => {
             readFile(file, "utf8", (err, rank) => {
                 if (err) {
                     console.log("File read failed:", err);
@@ -1359,12 +1301,12 @@ client.on('messageCreate', (message) => {
 //leveling up message    
 client.on('messageCreate', (message) => {
     if (message.channel.type !== ChannelType.DM) {
-        let file = (message.guild.id == `897154008228180048`) ? './rank.json' : './rank2.json'
-        let file2 = (message.guild.id == `897154008228180048`) ? './lvl_role.json' : './lvl_role2.json'
-        readFile("./channel.json", "utf8", (err, channels) => {
+        let file = (message.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/rank.json' : '../nitrojam_bot/json_files/rank2.json'
+        let file2 = (message.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/lvl_role.json' : '../nitrojam_bot/json_files/lvl_role2.json'
+        readFile("../nitrojam_bot/json_files/channel.json", "utf8", (err, channels) => {
             readFile(file2, "utf8", (err, role) => {
                 readFile(file, "utf8", (err, rank) => {
-                    readFile("./alert.json", "utf8", (err, alert) => {
+                    readFile("../nitrojam_bot/json_files/alert.json", "utf8", (err, alert) => {
                         let userPoints = rank.split(message.author.id).slice(1, 2).toString()
                         let lvl1 = parseInt(userPoints.split(' ').slice(6, 7))
                         console.log(`f-`, lvl1)
@@ -1401,7 +1343,7 @@ client.on('messageCreate', (message) => {
 })
 //get all levels command
 client.on('messageCreate', (message) => {
-    readFile("./rank.json", "utf8", (err, jsonString) => {
+    readFile("../nitrojam_bot/json_files/rank.json", "utf8", (err, jsonString) => {
         if (err) {
             console.log("File read failed:", err);
             return;
@@ -1411,7 +1353,7 @@ client.on('messageCreate', (message) => {
             console.log(`${jsonString}`)
         }
         if (!jsonString.includes(message.author.id)) {
-            writeFileSync('./rank.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` exp` + ` = ` + `0` + ` lvl ` + `= ` + `0`, {
+            writeFileSync('../nitrojam_bot/json_files/rank.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` exp` + ` = ` + `0` + ` lvl ` + `= ` + `0`, {
                 encoding: 'utf8',
                 flag: 'w'
             })
@@ -1433,7 +1375,7 @@ client.on('messageCreate', (message) => {
 })
 //get all points command
 client.on('messageCreate', (message) => {
-    readFile("./points.json", "utf8", (err, jsonString) => {
+    readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, jsonString) => {
         if (err) {
             console.log("File read failed:", err);
             return;
@@ -1444,7 +1386,7 @@ client.on('messageCreate', (message) => {
         }
         if (!jsonString.includes(message.author.id)) {
 
-            writeFileSync('./points.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` = ` + `0`, {
+            writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${jsonString}` + `\n` + `${message.author.id}` + ` = ` + `0`, {
                 encoding: 'utf8',
                 flag: 'w'
             })
@@ -1459,14 +1401,14 @@ client.on('messageCreate', (message) => {
 //points shop
 client.on('interactionCreate', (interaction) => {
     if (interaction.channel.type !== ChannelType.DM) {
-        readFile("./points.json", "utf8", (err, points) => {
+        readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
             if (interaction.isButton() && interaction.customId == `page2`) {
                 let list = interaction.message.channel.messages.fetch(`${interaction.message.id}`).then(message => message)
                 let userPoints = points.split(interaction.user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 let listContent = Promise.resolve(list).then(function (value) {
-                    readFile("./shop.json", "utf8", (err, shop1) => {
-                        readFile("./shop2.json", "utf8", (err, shop2) => {
+                    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                        readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
                             let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
                             let msg = jsonString.toString().replace(/["]/g, ``).replace(/[,]/g, `>\n`).replace(/roleID:/g, `role:<@&`)
                             let page2 = msg.toString().split(`\n`).slice(66, 135).toString().replace(/[,]/g, `\n`)
@@ -1506,14 +1448,14 @@ client.on('interactionCreate', (interaction) => {
 })
 client.on('interactionCreate', (interaction) => {
     if (interaction.channel.type !== ChannelType.DM) {
-        readFile("./points.json", "utf8", (err, points) => {
+        readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
             if (interaction.isButton() && interaction.customId == `page1`) {
                 let list = interaction.message.channel.messages.fetch(`${interaction.message.id}`).then(message => message)
                 let userPoints = points.split(interaction.user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 let listContent = Promise.resolve(list).then(function (value) {
-                    readFile("./shop.json", "utf8", (err, shop1) => {
-                        readFile("./shop2.json", "utf8", (err, shop2) => {
+                    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                        readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
                             let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
                             let msg = jsonString.toString().replace(/["]/g, ``).replace(/[,]/g, `>\n`).replace(/roleID:/g, `role:<@&`)
                             let page1 = msg.toString().split(`\n`).slice(0, 65).toString().replace(/[,]/g, `\n`)
@@ -1548,14 +1490,14 @@ client.on('interactionCreate', (interaction) => {
 })
 client.on('interactionCreate', (interaction) => {
     if (interaction.channel.type !== ChannelType.DM) {
-        readFile("./points.json", "utf8", (err, points) => {
+        readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
             if (interaction.isButton() && interaction.customId == `page3`) {
                 let list = interaction.message.channel.messages.fetch(`${interaction.message.id}`).then(message => message)
                 let userPoints = points.split(interaction.user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 let listContent = Promise.resolve(list).then(function (value) {
-                    readFile("./shop.json", "utf8", (err, shop1) => {
-                        readFile("./shop2.json", "utf8", (err, shop2) => {
+                    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                        readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
                             let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
                             let msg = jsonString.toString().replace(/["]/g, ``).replace(/[,]/g, `>\n`).replace(/roleID:/g, `role:<@&`)
                             let page3 = msg.toString().split(`\n`).slice(136, 200).toString().replace(/[,]/g, `\n`)
@@ -1591,7 +1533,7 @@ client.on('interactionCreate', (interaction) => {
 })
 //shop item remove
 client.on('messageCreate', (message) => {
-    readFile("./shop.json", "utf8", (err, jsonString) => {
+    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, jsonString) => {
         if (err) {
             console.log("File read failed:", err);
             return;
@@ -1606,7 +1548,7 @@ client.on('messageCreate', (message) => {
             console.log([item_name], [item_price], [item_id])
             if (item_name == null || item_price == null || item_price == NaN || item_id == null) return message.reply(`to remove the item, the item have to includes his **name**, **price**, **id** like they show is the ${Command}shop items with , in the end of any line`);
             if (!jsonString.includes(`"ID":"${item_id}"`)) return message.reply(`the shop doesn't selling an item with this ID`)
-            else return writeFileSync('./shop.json', `` + `${remove}`, {
+            else return writeFileSync('../nitrojam_bot/shop.json', `` + `${remove}`, {
                 encoding: 'utf8',
                 flag: 'w'
             })
@@ -1615,7 +1557,7 @@ client.on('messageCreate', (message) => {
 })
 //get all items bought command
 client.on('messageCreate', (message) => {
-    readFile("./ShopUsers.json", "utf8", (err, jsonString) => {
+    readFile("../nitrojam_bot/json_files/ShopUsers.json", "utf8", (err, jsonString) => {
         if (err) {
             console.log("File read failed:", err);
             return;
@@ -1644,7 +1586,7 @@ client.on('messageCreate', (message) => {
             let new_points_member = points_member + amount
             console.log([amount], [points_user], [points_member], [new_points_member], [new_points_user])
             let newUser = point.replace(`${message.author.id} = ${points_user}`, `${message.author.id} = ${new_points_user}`).toString().replace(`${user.id} = ${points_member}`, `${user.id} = ${new_points_member}`)
-            writeFileSync('./points.json', `` + `${newUser}`, {
+            writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${newUser}`, {
                 encoding: 'utf8',
                 flag: 'w'
             })
@@ -1667,8 +1609,8 @@ client.on('messageCreate', (message) => {
 })
 //add password command
 client.on('messageCreate', (message) => {
-    readFile("./roles.json", "utf8", (err, roles) => {
-        readFile("./password.json", "utf8", (err, pass) => {
+    readFile("../nitrojam_bot/json_files/roles.json", "utf8", (err, roles) => {
+        readFile("../nitrojam_bot/json_files/password.json", "utf8", (err, pass) => {
             if (message.content.toLowerCase().startsWith(`${Command}save`)) {
                 if (message.channel.name === '「🤖」commands' || message.channel.name === '🔐↣｜commands' || message.channel.name == `bot-testing☃`) {
                     let password = message.content.split(' ').slice(1, 2).toString()
@@ -1704,11 +1646,11 @@ client.on('messageCreate', (message) => {
                         let role0 = user_roles.toString().split(`,`).slice(9, 10).toString()
                         role0 = (!role0) ? role9 : role0
                         console.log(password)
-                        writeFileSync('./password.json', pass + `\n${message.author.id} = ${password}`, {
+                        writeFileSync('../nitrojam_bot/json_files/password.json', pass + `\n${message.author.id} = ${password}`, {
                             encoding: 'utf8',
                             flag: 'w'
                         })
-                        writeFileSync('./roles.json', roles + `\n${password} = ${role1},${role2},${role3},${role4},${role5},${role6},${role7},${role8},${role9},${role0},`, {
+                        writeFileSync('../nitrojam_bot/json_files/roles.json', roles + `\n${password} = ${role1},${role2},${role3},${role4},${role5},${role6},${role7},${role8},${role9},${role0},`, {
                             encoding: 'utf8',
                             flag: 'w'
                         })
@@ -1722,7 +1664,7 @@ client.on('messageCreate', (message) => {
 })
 //load roles command
 client.on('messageCreate', (message) => {
-    readFile("./roles.json", "utf8", (err, roles) => {
+    readFile("../nitrojam_bot/json_files/roles.json", "utf8", (err, roles) => {
         if (message.content.toLowerCase().startsWith(`${Command}load`)) {
             if (message.channel.name === '「🤖」commands' || message.channel.name === '🔐↣｜commands' || message.channel.name == `bot-testing☃`) {
                 let password = message.content.split('-').slice(1, 2).toString()
@@ -1876,9 +1818,9 @@ client.on('interactionCreate', (interaction) => {
 //redeem code command
 client.on('messageCreate', (message) => {
     if (message.content.toLowerCase().startsWith(`${Command}redeem`)) {
-        readFile("./redeem.json", "utf8", (err, code) => {
-            readFile("./redeem_user.json", "utf8", (err, users) => {
-                readFile("./points.json", "utf8", (err, points) => {
+        readFile("../nitrojam_bot/json_files/redeem.json", "utf8", (err, code) => {
+            readFile("../nitrojam_bot/json_files/redeem_user.json", "utf8", (err, users) => {
+                readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                     let Code = message.content.split(` `).slice(1, 2).toString()
                     if (!Code || Code == undefined) return message.reply(`you have to add a code to redeem`)
                     else {
@@ -1895,11 +1837,11 @@ client.on('messageCreate', (message) => {
                                 let new_points = amount2 + user_points2
                                 message.author.send(`you redeem the code **${Code}** and received **${amount2}**\nyour points balance **${new_points}**`).catch(console.error)
                                 let new_point = points.toString().replace(`${message.author.id} = ${user_points2}`, `${message.author.id} = ${new_points}`)
-                                writeFileSync('./points.json', `` + `${new_point}`, {
+                                writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${new_point}`, {
                                     encoding: 'utf8',
                                     flag: 'w'
                                 })
-                                writeFileSync('./redeem_user.json', users + `\n${message.author.id} = ${Code}`, {
+                                writeFileSync('../nitrojam_bot/json_files/redeem_user.json', users + `\n${message.author.id} = ${Code}`, {
                                     encoding: 'utf8',
                                     flag: 'w'
                                 })
@@ -1915,12 +1857,12 @@ client.on('messageCreate', (message) => {
 //redeem codes add
 client.on('messageCreate', (message) => {
     if (message.content.toLowerCase().startsWith(`${Command}addcode`)) {
-        readFile("./redeem.json", "utf8", (err, code) => {
+        readFile("../nitrojam_bot/json_files/redeem.json", "utf8", (err, code) => {
             let Code = message.content.split(` `).slice(1, 2).toString()
             let amount = parseInt(message.content.split(` `).slice(2, 3))
             if (code.includes(Code)) return message.reply(`code already exist`)
             else {
-                writeFileSync('./redeem.json', code + `\n${Code} = ${amount}`, {
+                writeFileSync('../nitrojam_bot/json_files/redeem.json', code + `\n${Code} = ${amount}`, {
                     encoding: 'utf8',
                     flag: 'w'
                 })
@@ -1937,7 +1879,7 @@ client.on('messageCreate', (message) => {
 //test
 client.on('messageCreate', (message) => {
     if (message.content.toLowerCase() == `${Command}leaderboard`) {
-        readFile("./rank.json", "utf8", (err, users) => {
+        readFile("../nitrojam_bot/json_files/rank.json", "utf8", (err, users) => {
             let id = users.replace(/ lvl = [0-9]/g, ``).replace(/ exp = /g, `,`)
             let xp = id.replace(/[0-9],/g, ` wow `)
             let xp2 = xp.replace(/[0-9] wow /, `wow`)
@@ -2703,13 +2645,13 @@ client.on('interactionCreate', (interaction) => {
                         setTimeout(point, 1500)
 
                         function point() {
-                            readFile("./points.json", "utf8", (err, points) => {
+                            readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                                 let userPoints = points.split(interaction.user.id).slice(1, 2).toString()
                                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                                 let reword = num + (diff_val * 1.5)
                                 console.log(`test:` + [num], [reword])
                                 let new_points = points.toString().replace(`${interaction.user.id} = ${num}`, `${interaction.user.id} = ${reword}`).toString()
-                                writeFileSync('./points.json', new_points)
+                                writeFileSync('../nitrojam_bot/json_files/points.json', new_points)
                             })
                         }
                     }
@@ -2745,13 +2687,13 @@ client.on('interactionCreate', (interaction) => {
                         setTimeout(point, 1500)
 
                         function point() {
-                            readFile("./points.json", "utf8", (err, points) => {
+                            readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                                 let userPoints = points.split(interaction.user.id).slice(1, 2).toString()
                                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                                 let reword = num + 25
                                 console.log(`test:` + [num], [reword])
                                 let new_points = points.toString().replace(`${interaction.user.id} = ${num}`, `${interaction.user.id} = ${reword}`).toString()
-                                writeFileSync('./points.json', new_points)
+                                writeFileSync('../nitrojam_bot/json_files/points.json', new_points)
                             })
                         }
                     }
@@ -3031,12 +2973,12 @@ client.on('interactionCreate', (interaction) => {
         }
         if (interaction.commandName == `fnf-access`) {
             let id = interaction.options.getString('user_id', true)
-            readFile("./fnf.json", "utf8", (err, users) => {
+            readFile("../nitrojam_bot/json_files/fnf.json", "utf8", (err, users) => {
                 let user = users.includes(id)
                 if (user == `false` || user == false || !user == true || !user == `true`) return;
                 if (users.includes(id)) return interaction.reply(`you need to mention a member you want to add`)
                 else {
-                    writeFileSync('./fnf.json', users + `\n` + id)
+                    writeFileSync('../nitrojam_bot/json_files/fnf.json', users + `\n` + id)
                     interaction.reply(`done`)
                 }
             })
@@ -3077,14 +3019,18 @@ client.on('interactionCreate', (interaction) => {
         }
         if (interaction.commandName == `points`) {
             if (interaction.channel.id == `1028779833301409893` || interaction.channel.id == `1028779831581745307` || interaction.channel.id == `968895193711517726` || interaction.channel.id == `966724563306180718`) {
-                readFile("./points.json", "utf8", (err, jsonString) => {
-                    if (!jsonString.includes(interaction.user.id)) {
-                        interaction.reply(`you don't have points. chat more to get points`)
+                let user = interaction.options.getMember('member', false)
+                user = (!user) ? interaction.user : user.user
+                let name = user.username
+                name = (!user || user == interaction.user) ? `you` : name
+                readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, jsonString) => {
+                    if (!jsonString.includes(user.id)) {
+                        interaction.reply(`${name} don't have points. chat more to get points`)
                     }
-                    if (jsonString.includes(interaction.user.id)) {
-                        let userPoints = jsonString.split(interaction.user.id).slice(1, 2).toString()
+                    if (jsonString.includes(user.id)) {
+                        let userPoints = jsonString.split(user.id).slice(1, 2).toString()
                         let num = parseInt(userPoints.split(' ').slice(2, 3))
-                        interaction.reply(`you got ${num} points`)
+                        interaction.reply(`${name} have **${num}** points`)
                     }
                 })
             } else return interaction.reply({
@@ -3093,222 +3039,81 @@ client.on('interactionCreate', (interaction) => {
             })
         }
         if (interaction.commandName == `roles`) {
-            const row01 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('live alerts')
-                    .setLabel('Live alerts')
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji(`968021661389570058`),
-                    new ButtonBuilder()
+            const embed = new Discord.EmbedBuilder()
+                .setColor(`0xed00fc`)
+                .addFields({
+                    name: `get roles`,
+                    value: `choose what you want to get ping for`
+                })
+
+            const row = new Discord.ActionRowBuilder()
+                .addComponents(new Discord.SelectMenuBuilder()
+                    .setCustomId('add')
+                    .setPlaceholder('choose a role')
+                    .setMinValues(1)
+                    .setMaxValues(1)
+                    .addOptions({
+                        label: 'התראות לייבים',
+                        description: `פינג ללייבים`,
+                        value: '1028779829836906612',
+                    }, {
+                        label: 'עידכוני שרת',
+                        description: `פינג לעידכונים`,
+                        value: '1028779829836906611'
+                    }, {
+                        label: `התראות טיקטוק`,
+                        description: `פינג לטיקטוק`,
+                        value: '1041659015970701332'
+                    }, {
+                        label: `התראות איוונטים`,
+                        description: `פינג לאיוונטים`,
+                        value: '1028779829836906610'
+                    })
+                );
+
+            const embed2 = new Discord.EmbedBuilder()
+                .setColor(`0xed00fc`)
+                .addFields({
+                    name: `remove roles`,
+                    value: `choose roles you want to remove`
+                })
+
+            const row2 = new Discord.ActionRowBuilder()
+                .addComponents(new Discord.SelectMenuBuilder()
                     .setCustomId('remove')
-                    .setLabel('Remove role')
-                    .setStyle(ButtonStyle.Primary),
+                    .setPlaceholder('choose a role')
+                    .setMinValues(1)
+                    .setMaxValues(1)
+                    .addOptions({
+                        label: 'התראות לייבים',
+                        description: `פינג ללייבים`,
+                        value: '1028779829836906612',
+                    }, {
+                        label: 'עידכוני שרת',
+                        description: `פינג לעידכונים`,
+                        value: '1028779829836906611'
+                    }, {
+                        label: `התראות טיקטוק`,
+                        description: `פינג לטיקטוק`,
+                        value: '1041659015970701332'
+                    }, {
+                        label: `התראות איוונטים`,
+                        description: `פינג לאיוונטים`,
+                        value: '1028779829836906610'
+                    })
                 );
-            const embed01 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**Live alerts**`)
-                .addFields({
-                    name: `To get the role "live alerts"`,
-                    value: `click on the button`
-                })
-            const row11 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('server update')
-                    .setLabel('Server Update')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove2')
-                    .setLabel('Remove role')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed11 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**Server update**`)
-                .addFields({
-                    name: `To get the role "server update"`,
-                    value: `click on the button`
-                })
-            const row21 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('event alerts')
-                    .setLabel('Event alerts')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove3')
-                    .setLabel('Remove role')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed21 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**Event alerts**`)
-                .addFields({
-                    name: `To get the role "Event alerts"`,
-                    value: `click on the button`
-                })
-            const row31 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('he')
-                    .setLabel('He/Him')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('she')
-                    .setLabel('She/Her')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('they')
-                    .setLabel('they/them')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('other')
-                    .setLabel('Other/Ask')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed31 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**Pronouns**`)
-                .addFields({
-                    name: `Choose your pronouns`,
-                    value: `to choose click on the button`
-                })
-            const row41 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('hebrew')
-                    .setLabel('Hebrew speaker')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove4')
-                    .setLabel('Remove role')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed41 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**Hebrew speakers**`)
-                .addFields({
-                    name: `To get the role "Hebrew speakers"`,
-                    value: `click on the button`
-                })
-            const row02 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('live alerts')
-                    .setLabel('התראות לייבים')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove')
-                    .setLabel('הסר רול')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed02 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**התראות לייבים**`)
-                .addFields({
-                    name: `כדי לקבל את הרול"`,
-                    value: `תלחצו על הכפתור`
-                })
-            const row12 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('server update')
-                    .setLabel('עידכוני שרת')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove2')
-                    .setLabel('הסר רול')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed12 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**עידכוני שרת**`)
-                .addFields({
-                    name: `כדי לקבל את הרול"`,
-                    value: `תלחצו על הכפתור`
-                })
-            const row22 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('event alerts')
-                    .setLabel('התראות איוונטים')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove3')
-                    .setLabel('הסר רול')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed22 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**התראות איוונטים**`)
-                .addFields({
-                    name: `כדי לקבל את הרול"`,
-                    value: `תלחצו על הכפתור`
-                })
-            const row32 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                    .setCustomId('tiktok alerts')
-                    .setLabel('התראות טיקטוק')
-                    .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                    .setCustomId('remove4')
-                    .setLabel('הסר רול')
-                    .setStyle(ButtonStyle.Primary),
-                );
-            const embed32 = new Discord.EmbedBuilder()
-                .setColor(0x641ed4)
-                .setTitle(`**התראות טיקטוק**`)
-                .addFields({
-                    name: `כדי לקבל את הרול"`,
-                    value: `תלחצו על הכפתור`
-                })
-            let embed0 = (interaction.guild.id == `897154008228180048`) ? embed01 : embed02
-            let row0 = (interaction.guild.id == `897154008228180048`) ? row01 : row02
-            let embed1 = (interaction.guild.id == `897154008228180048`) ? embed11 : embed12
-            let row1 = (interaction.guild.id == `897154008228180048`) ? row11 : row12
-            let embed2 = (interaction.guild.id == `897154008228180048`) ? embed21 : embed22
-            let row2 = (interaction.guild.id == `897154008228180048`) ? row21 : row22
-            let embed3 = (interaction.guild.id == `897154008228180048`) ? embed31 : embed32
-            let row3 = (interaction.guild.id == `897154008228180048`) ? row31 : row32
-            let embed4 = (interaction.guild.id == `897154008228180048`) ? embed41 : false
-            let row4 = (interaction.guild.id == `897154008228180048`) ? row41 : false
+
             interaction.channel.send(`https://cdn.discordapp.com/attachments/898223066277101578/971059357796155432/rainbow-line.gif`)
             interaction.channel.send(`https://cdn.discordapp.com/attachments/898223066277101578/971059357796155432/rainbow-line.gif`)
             interaction.channel.send({
-                ephemeral: true,
-                embeds: [embed0],
-                components: [row0]
-            });
+                embeds: [embed],
+                components: [row]
+            }).catch(console.error)
+
             interaction.channel.send({
-                ephemeral: true,
-                embeds: [embed1],
-                components: [row1]
-            });
-            interaction.channel.send({
-                ephemeral: true,
                 embeds: [embed2],
                 components: [row2]
-            });
-            interaction.channel.send({
-                ephemeral: true,
-                embeds: [embed3],
-                components: [row3]
-            });
-            if (embed4 !== false) {
-                interaction.channel.send({
-                    content: `pronouns roles can be remove **__ONLY__** by a staff member`,
-                    ephemeral: true,
-                    embeds: [embed3],
-                    components: [row3]
-                });
-                interaction.channel.send({
-                    ephemeral: true,
-                    embeds: [embed4],
-                    components: [row4]
-                });
-            }
+            }).catch(console.error)
             interaction.channel.send(`https://cdn.discordapp.com/attachments/898223066277101578/971059357796155432/rainbow-line.gif`)
         }
         if (interaction.commandName == `rules`) {
@@ -3396,7 +3201,7 @@ client.on('interactionCreate', (interaction) => {
             }, function (value) {})
         }
         if (interaction.commandName == `rank`) {
-            let file = (interaction.guild.id !== `897154008228180048`) ? './rank2.json' : './rank.json'
+            let file = (interaction.guild.id !== `897154008228180048`) ? '../nitrojam_bot/json_files/rank2.json' : '../nitrojam_bot/json_files/rank.json'
             if (interaction.channel.id == `1028779833301409893` || interaction.channel.id == `1028779833301409896` || interaction.channel.id == `1028779831581745307` || interaction.channel.id == `968895193711517726` || interaction.channel.id == `966724563306180718`) {
                 let user = interaction.options.getMember('member', false)
                 readFile(file, "utf8", (err, rank) => {
@@ -3419,11 +3224,11 @@ client.on('interactionCreate', (interaction) => {
                         format: `png`
                     })
                     let bg2 = new Image()
-                    bg2.src = "./rank.png"
+                    bg2.src = "../nitrojam_bot/rank.png"
                     let av2 = new Image()
                     let bg = loadImage("https://img.rasset.ie/0015d72f-1600.jpg"),
                         av = loadImage((img_user))
-                    registerFont('./ggsans-Bold.ttf', {
+                    registerFont('../nitrojam_bot/ggsans-Bold.ttf', {
                         family: 'gg sans'
                     })
                     setTimeout(canvas_, 7000)
@@ -3518,10 +3323,10 @@ client.on('interactionCreate', (interaction) => {
         if (interaction.commandName == `add-xp`) {
             let user = interaction.options.getMember('member', true)
             let amount = interaction.options.getNumber('amount', true)
-            readFile("./rank.json", "utf8", (err, rank1) => {
-                readFile("./rank2.json", "utf8", (err, rank2) => {
+            readFile("../nitrojam_bot/json_files/rank.json", "utf8", (err, rank1) => {
+                readFile("../nitrojam_bot/json_files/rank2.json", "utf8", (err, rank2) => {
                     let rank = (interaction.guild.id == `897154008228180048`) ? rank1 : rank2
-                    let file = (interaction.guild.id == `897154008228180048`) ? './rank.json' : './rank2.json'
+                    let file = (interaction.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/rank.json' : '../nitrojam_bot/json_files/rank2.json'
                     let userPoints = rank.toString().split(user.user.id).slice(1, 2).toString()
                     let exp = parseInt(userPoints.split(' ').slice(3, 4))
                     let lvl = parseInt(userPoints.split(' ').slice(6, 7))
@@ -3542,10 +3347,10 @@ client.on('interactionCreate', (interaction) => {
         if (interaction.commandName == `remove-xp`) {
             let user = interaction.options.getMember('member', true)
             let amount = interaction.options.getNumber('amount', true)
-            readFile("./rank.json", "utf8", (err, rank1) => {
-                readFile("./rank2.json", "utf8", (err, rank2) => {
+            readFile("../nitrojam_bot/json_files/rank.json", "utf8", (err, rank1) => {
+                readFile("../nitrojam_bot/json_files/rank2.json", "utf8", (err, rank2) => {
                     let rank = (interaction.guild.id == `897154008228180048`) ? rank1 : rank2
-                    let file = (interaction.guild.id == `897154008228180048`) ? './rank.json' : './rank2.json'
+                    let file = (interaction.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/rank.json' : '../nitrojam_bot/json_files/rank2.json'
                     let userPoints = rank.toString().split(user.user.id).slice(1, 2).toString()
                     let exp = parseInt(userPoints.split(' ').slice(3, 4))
                     let lvl = parseInt(userPoints.split(' ').slice(6, 7))
@@ -3566,10 +3371,10 @@ client.on('interactionCreate', (interaction) => {
         }
         if (interaction.commandName == `reset-xp`) {
             let user = interaction.options.getMember('member', false)
-            readFile("./rank.json", "utf8", (err, rank1) => {
-                readFile("./rank2.json", "utf8", (err, rank2) => {
+            readFile("../nitrojam_bot/json_files/rank.json", "utf8", (err, rank1) => {
+                readFile("../nitrojam_bot/json_files/rank2.json", "utf8", (err, rank2) => {
                     let rank = (interaction.guild.id == `897154008228180048`) ? rank1 : rank2
-                    let file = (interaction.guild.id == `897154008228180048`) ? './rank.json' : './rank2.json'
+                    let file = (interaction.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/rank.json' : '../nitrojam_bot/json_files/rank2.json'
                     if (!user) {
                         interaction.reply(`all ranks have been reset`).catch(console.error)
                         writeFileSync(file, "", {
@@ -3595,10 +3400,10 @@ client.on('interactionCreate', (interaction) => {
             let price = interaction.options.getNumber('price', true)
             let item_id = interaction.options.getString('item_id', true)
             let role_id = interaction.options.getString('role_id', true)
-            readFile("./shop.json", "utf8", (err, shop1) => {
-                readFile("./shop2.json", "utf8", (err, shop2) => {
+            readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
                     let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
-                    let file = (interaction.guild.id == `897154008228180048`) ? './shop.json' : './shop2.json'
+                    let file = (interaction.guild.id == `897154008228180048`) ? '../nitrojam_bot/json_files/shop.json' : '../nitrojam_bot/json_files/shop2.json'
                     console.log([name], [price], [item_id])
                     if (jsonString.includes(`"ID":"${item_id}"`)) return interaction.reply(`you already have an item with this id **"${item_id}"**`)
                     else {
@@ -3613,9 +3418,9 @@ client.on('interactionCreate', (interaction) => {
         }
         if (interaction.commandName == `shop`) {
             if (interaction.channel.id == `1028779833301409893` || interaction.channel.id == `1028779831581745307` || interaction.channel.id == `968895193711517726` || interaction.channel.id == `966724563306180718`) {
-                readFile("./points.json", "utf8", (err, points) => {
-                    readFile("./shop.json", "utf8", (err, shop1) => {
-                        readFile("./shop2.json", "utf8", (err, shop2) => {
+                readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
+                    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                        readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
                             let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
                             let msg = jsonString.toString().replace(/["]/g, ``).replace(/[,]/g, `>\n`).replace(/roleID:/g, `role:<@&`)
                             let page1 = msg.toString().split(`\n`).slice(0, 65).toString().replace(/[,]/g, `\n`)
@@ -3652,14 +3457,14 @@ client.on('interactionCreate', (interaction) => {
             })
         }
         if (interaction.commandName == `add-points`) {
-            readFile("./points.json", "utf8", (err, points) => {
+            readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                 let user = interaction.options.getMember('member', true)
                 let amount = interaction.options.getNumber('amount', true)
                 let userPoints = points.split(user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 let new_amount = num + amount
                 let new_points = points.toString().replace(`${user.id} = ${num}`, `${user.id} = ${new_amount}`)
-                writeFileSync('./points.json', new_points, {
+                writeFileSync('../nitrojam_bot/json_files/points.json', new_points, {
                     encoding: 'utf8',
                     flag: 'w'
                 })
@@ -3667,14 +3472,14 @@ client.on('interactionCreate', (interaction) => {
             })
         }
         if (interaction.commandName == `remove-points`) {
-            readFile("./points.json", "utf8", (err, points) => {
+            readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                 let user = interaction.options.getMember('member', true)
                 let amount = interaction.options.getNumber('amount', true)
                 let userPoints = points.split(user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 let new_amount = num - amount
                 let new_points = points.toString().replace(`${user.id} = ${num}`, `${user.id} = ${new_amount}`)
-                writeFileSync('./points.json', new_points, {
+                writeFileSync('../nitrojam_bot/json_files/points.json', new_points, {
                     encoding: 'utf8',
                     flag: 'w'
                 })
@@ -3682,20 +3487,20 @@ client.on('interactionCreate', (interaction) => {
             })
         }
         if (interaction.commandName == `reset-points`) {
-            readFile("./points.json", "utf8", (err, points) => {
+            readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
                 let user = interaction.options.getMember('member', true)
                 let amount = interaction.options.getNumber('amount', true)
                 let userPoints = points.split(user.id).slice(1, 2).toString()
                 let num = parseInt(userPoints.split(' ').slice(2, 3))
                 if (!user) {
-                    writeFileSync('./points.json', ``, {
+                    writeFileSync('../nitrojam_bot/json_files/points.json', ``, {
                         encoding: 'utf8',
                         flag: 'w'
                     })
                     interaction.reply(`all points have been reset`)
                 } else if (!!user) {
                     let new_points = points.toString().replace(`${user.id} = ${num}`, ``)
-                    writeFileSync('./points.json', new_points, {
+                    writeFileSync('../nitrojam_bot/json_files/points.json', new_points, {
                         encoding: 'utf8',
                         flag: 'w'
                     })
@@ -3705,10 +3510,10 @@ client.on('interactionCreate', (interaction) => {
         }
         if (interaction.commandName == `buy`) {
             if (interaction.channel.id == `1028779833301409893` || interaction.channel.id == `1028779831581745307` || interaction.channel.id == `968895193711517726` || interaction.channel.id == `966724563306180718`) {
-                readFile("./points.json", "utf8", (err, points) => {
-                    readFile("./shop.json", "utf8", (err, shop1) => {
-                        readFile("./shop2.json", "utf8", (err, shop2) => {
-                            readFile("./ShopUsers.json", "utf8", (err, userString) => {
+                readFile("../nitrojam_bot/json_files/points.json", "utf8", (err, points) => {
+                    readFile("../nitrojam_bot/json_files/shop.json", "utf8", (err, shop1) => {
+                        readFile("../nitrojam_bot/json_files/shop2.json", "utf8", (err, shop2) => {
+                            readFile("../nitrojam_bot/json_files/ShopUsers.json", "utf8", (err, userString) => {
                                 let jsonString = (interaction.guild.id == `897154008228180048`) ? shop1 : shop2
                                 let item = interaction.options.getString('item_name', true)
                                 let item_file = jsonString.split(`"${item}"`).slice(1, 2).toString().replace(`\n`, ``)
@@ -3737,11 +3542,11 @@ client.on('interactionCreate', (interaction) => {
                                 })
                                 else {
                                     let newPoints = points_amount - num_price
-                                    writeFileSync('./points.json', `` + `${points.replace(`${member.id} = ${points_amount}`, `${member.id} = ${newPoints}`)}`, {
+                                    writeFileSync('../nitrojam_bot/json_files/points.json', `` + `${points.replace(`${member.id} = ${points_amount}`, `${member.id} = ${newPoints}`)}`, {
                                         encoding: 'utf8',
                                         flag: 'w'
                                     })
-                                    writeFileSync('./ShopUsers.json', `` + `${userString}` + `\n` + `${member.id}` + `=>` + `${item_id}`, {
+                                    writeFileSync('../nitrojam_bot/json_files/ShopUsers.json', `` + `${userString}` + `\n` + `${member.id}` + `=>` + `${item_id}`, {
                                         encoding: 'utf8',
                                         flag: 'w'
                                     })
@@ -3785,116 +3590,287 @@ client.on('interactionCreate', (interaction) => {
             }).catch(console.error);
         }
         if (interaction.commandName == `test`) {
-            let user = interaction.options.getMember('member', false)
-            readFile("./rank.json", "utf8", (err, rank1) => {
-                if (err) {
-                    console.error(err);
+        }
+        if (interaction.commandName == `ping-access`) {
+            let user = interaction.options.getMember('member', true)
+            let action = interaction.options.getString('action', true)
+            readFile("../nitrojam_bot/json_files/ping_access.json", "utf8", (err, ping) => {
+                if (action == `add`) {
+                    if (ping.includes(user.id)) return interaction.reply(`this user have access already`).catch(console.error)
+                    else {
+                        writeFileSync("../nitrojam_bot/json_files/ping_access.json", ping + `\n` + `${user.id}`, {
+                            encoding: 'utf8',
+                            flag: 'w'
+                        })
+
+                        interaction.reply(`${user} added to the list successfully`).catch(console.error)
+                    }
+                } else {
+
+                    if (!ping.includes(user.id)) return interaction.reply(`this user doesn't had access to ping nitrojam`).catch(console.error)
+
+                    else {
+                        let new_ping = ping.replace(user.id, "").toString()
+                        writeFileSync("../nitrojam_bot/json_files/ping_access.json", new_ping, {
+                            encoding: 'utf8',
+                            flag: 'w'
+                        })
+
+                        interaction.reply(`${user} removed from the list successfully`).catch(console.error)
+
+                    }
                 }
-                readFile("./rank2.json", "utf8", (err, rank2) => {
-                    if (err) {
-                        console.error(err);
-                    }
-                    let jsonString = (interaction.guild.id == `897154008228180048`) ? rank1 : rank2
-                    let user2 = (!user) ? interaction.user : user.user
-                    let userName = user2.username
-                    if (!jsonString.includes(user2.id)) return writeFileSync('./rank.json', `` + `${jsonString}` + `\n` + `${user2.id}` + ` exp` + ` = ` + `0` + ` lvl ` + `= ` + `0`, {
-                        encoding: 'utf8',
-                        flag: 'w'
-                    })
-                    let userExp = jsonString.split(user2.id).slice(1, 2).toString()
-                    let exp = parseInt(userExp.split(' ').slice(3, 4))
-                    let lvl = parseInt(userExp.split(' ').slice(6, 7))
-                    let img_user = user2.displayAvatarURL({
-                        extension: `png`,
-                        dynamic: false,
-                        format: `png`
-                    })
-                    let bg2 = new Image()
-                    bg2.src = './rank.png'
-                    let av2 = new Image()
-                    let bg = loadImage("https://img.rasset.ie/0015d72f-1600.jpg"),
-                        av = loadImage((img_user))
-                    registerFont('./ggsans-Bold.ttf', {
-                        family: 'gg sans'
-                    })
-                    interaction.reply(`creating card`)
-                    setTimeout(canvas_, 7000)
-
-                    function canvas_() {
-                        const canvas = createCanvas(1000, 300)
-                        const ctx = canvas.getContext('2d')
-                        const bar_width = 600
-                        const math = (((exp / ((1 + lvl) * ((712 * lvl) / 8) * 2)) * 100))
-                        let math2 = ((1 + lvl) * ((712 * lvl) / 8) * 2)
-                        let math3 = (math2 >= 1000) ? `${math2 / 1000}k` : math2
-                        let math4 = (math2 > 1000000) ? `${math2 / 1000000}m` : math3
-                        let exp1 = exp
-                        let exp2 = (exp1 >= 1000) ? `${exp1 / 1000}k` : exp1
-                        let exp3 = (exp1 > 1000000) ? `${exp1/1000000}m` : exp2
-                        console.log([av2], [bg2], [av], [bg])
-                        ctx.drawImage(bg2, 0, 0, canvas.width, canvas.height)
-
-                        ctx.beginPath()
-                        ctx.arc(120, 120, 111, 0, 2 * Math.PI)
-                        ctx.lineWidth = 4
-                        ctx.strokeStyle = `#fafafa`
-                        ctx.stroke()
-                        ctx.closePath()
-
-                        ctx.lineJoin = `round`
-                        ctx.lineWidth = 69
-
-                        ctx.strokeRect(290, 191, bar_width, 0)
-
-                        ctx.strokeStyle = `#000000`
-                        ctx.strokeRect(292, 192, bar_width, 0)
-
-                        ctx.strokeStyle = `#fafafa`
-                        ctx.strokeRect(292, 192, (bar_width * (math / 100)), 0)
-
-                        ctx.lineJoin = `round`
-                        ctx.lineWidth = 45
-
-                        ctx.strokeStyle = `#fafafa`
-                        ctx.strokeRect(37, 250, (190), -1)
-
-                        ctx.font = "bold 40px Sans"
-                        ctx.fillStyle = `#131313`
-                        ctx.textAlign = "center"
-                        ctx.fillText(user2.tag, 130, 265, 210)
-
-                        ctx.font = "bold 40px Sans"
-                        ctx.fillStyle = `#fafafa`
-                        ctx.textAlign = "center"
-                        ctx.fillText(lvl, 930, 40, 80)
-
-                        ctx.font = "bold 30px Sans"
-                        ctx.fillStyle = `#fafafa`
-                        ctx.textAlign = "center"
-
-                        ctx.fillText(`${exp3}/${math4}`, 840, 155, 150)
-
-                        ctx.fillStyle = `#fafafa`
-                        ctx.font = "bold 40px Sans"
-                        ctx.fillText('Level', 850, 40, 200)
-
-                        ctx.beginPath()
-                        ctx.arc(120, 120, 110, 0, 2 * Math.PI, true)
-                        ctx.closePath()
-                        ctx.clip()
-
-                        ctx.drawImage(av2, 10, 10, 220, 220)
-
-                        const at = new Discord.AttachmentBuilder(canvas.toBuffer(), "rank.png")
-
-                        interaction.editReply({
-                            content: `card created`,
-                            files: [at]
-                        }).catch(console.error)
-                    }
-                    av2.src = img_user
-                })
             })
+        }
+        if (interaction.commandName == `leaderboard`) {
+            interaction.reply(`creating leaderboard...`)
+
+            var String = []
+            var length = []
+            var one = []
+            var two = []
+            var three = []
+            var four = []
+            var five = []
+            var six = []
+            var seven = []
+            var eight = []
+            var nine = []
+            var ten = []
+            var users = []
+            var user1_ = []
+            var user2_ = []
+            var user3_ = []
+            var user4_ = []
+            var user5_ = []
+            var user6_ = []
+            var user7_ = []
+            var user8_ = []
+            var user9_ = []
+            var user10_ = []
+
+            fs.readFile("../nitrojam_bot/json_files/rank2.json", "utf8", (err, rank2) => {
+                const string = rank2
+                const string3 = string.toString().replace(/\n/g, ` * `)
+                const string2 = string3
+                String.push(string2)
+
+                const dots = string2.replace(/[0-9]/g, ``).replace(/[a-z]/g, ``).replace(/=/g, '').replace(/ /g, ``).toString()
+                length.push(dots)
+            })
+
+            setTimeout(() => {
+                var user1 = []
+                var user2 = []
+                var xp1 = []
+                var xp2 = []
+                var winner1 = []
+                var winner2 = []
+                var winner3 = []
+                var winner4 = []
+
+                const length2 = length.toString().length
+
+                console.log(String)
+                console.log(length2)
+                for (let i = 0; i < length2 / 2; i++) {
+                    var loser1 = []
+                    var loser2 = []
+                    var last = []
+
+                    const user_1 = String.toString().split(` * `).slice(i + 1, i + 2)
+                    user1.push(user_1)
+
+                    const user_2 = String.toString().split(` * `).slice(i + 3, i + 4)
+                    user2.push(user_2)
+
+                    const exp1 = user_1.toString().split(`exp = `).slice(1, 2).toString().split(`lvl`).slice(0, 1)
+                    xp1.push(exp1)
+
+                    const exp2 = user_2.toString().split(`exp = `).slice(1, 2).toString().split(`lvl`).slice(0, 1)
+                    xp2.push(exp2)
+
+                    const EXP1 = parseInt(exp1)
+                    const EXP2 = parseInt(exp2)
+
+                    last = last.toString().split(/[0-9]/).slice(0, 1)
+
+                    if (EXP1 > EXP2) {
+                        setTimeout(() => {
+                            last.push(EXP1)
+                            setTimeout(() => {
+                                winner1.push(EXP1)
+                                loser1.push(EXP2)
+                            }, 10)
+                        }, 10)
+                    } else if (EXP1 < EXP2) {
+                        setTimeout(() => {
+                            last.push(EXP1)
+                            setTimeout(() => {
+                                winner1.push(EXP2)
+                                loser1.push(EXP1)
+                            }, 10)
+                        }, 10)
+                    }
+                    setTimeout(() => {
+                        for (let i = 0; i < length2 / 2; i++) {
+                            for (let i2 = 0; i2 < length2 / 2; i2++) {
+                                const w = winner1.toString().split(`,`).slice(i, i + 1)
+                                const l = loser1.toString().split(`,`).slice(i2, i2 + 1)
+
+                                if (Number(w) > Number(l)) {
+                                    if (!winner2.toString().includes(w)) {
+                                        winner2.push(w)
+                                    }
+                                    loser2.push(l)
+                                } else if (Number(w) < Number(l)) {
+                                    if (!winner2.toString().includes(l)) {
+                                        winner2.push(l)
+                                    }
+                                    loser2.push(w)
+                                }
+                            }
+                        }
+                        setTimeout(() => {
+                            for (let i = 0; i < length2 / 5.4; i++) {
+                                for (let i2 = 0; i2 < length2 / 5.4; i2++) {
+                                    const w1 = winner2.toString().split(`,`).slice(i, i + 1)
+                                    const w2 = winner2.toString().split(`,`).slice(i2, i2 + 1)
+
+                                    if (Number(w1) < Number(w2)) {
+                                        if (!winner3.toString().includes(w2)) {
+                                            winner3.push(w2)
+                                        }
+                                    } else if (Number(w1) > Number(w2)) {
+                                        if (!winner3.toString().includes(w1)) {
+                                            winner3.push(w1)
+                                        }
+                                    }
+                                }
+                            }
+                        }, 100)
+                    }, 100)
+                }
+
+                setTimeout(() => {
+
+                    setTimeout(() => {
+                        const l = winner4.toString().replace(/,/g, `*`).replace(/[0-9]/g, ``)
+
+                        const num = l.length + 1
+                        user1_.push(` <@` + users.toString().split(`,`).slice(0, 1).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 1, num - 0).toString() + ` exp`)
+                        user2_.push(` <@` + users.toString().split(`,`).slice(1, 2).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 2, num - 1).toString() + ` exp`)
+                        user3_.push(` <@` + users.toString().split(`,`).slice(2, 3).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 3, num - 2).toString() + ` exp`)
+                        user4_.push(` <@` + users.toString().split(`,`).slice(3, 4).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 4, num - 3).toString() + ` exp`)
+                        user5_.push(` <@` + users.toString().split(`,`).slice(4, 5).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 5, num - 4).toString() + ` exp`)
+                        user6_.push(` <@` + users.toString().split(`,`).slice(5, 6).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 6, num - 5).toString() + ` exp`)
+                        user7_.push(` <@` + users.toString().split(`,`).slice(6, 7).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 7, num - 6).toString() + ` exp`)
+                        user8_.push(` <@` + users.toString().split(`,`).slice(7, 8).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 8, num - 7).toString() + ` exp`)
+                        user9_.push(` <@` + users.toString().split(`,`).slice(8, 9).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 9, num - 8).toString() + ` exp`)
+                        user10_.push(` <@` + users.toString().split(`,`).slice(9, 10).toString() + `>: ` + winner4.toString().split(`,`).slice(num - 10, num - 9).toString() + ` exp`)
+
+                        console.log(`winner3:`, winner3)
+                        console.log(`winner4:`, winner4)
+                        console.log(users)
+
+                        let name1 = client.users.cache.find(id => id == users.toString().split(`,`).slice(0, 1).toString())
+                        name1 = (name1 == undefined) ? name1 : name1.username
+                        let name2 = client.users.cache.find(id => id == users.toString().split(`,`).slice(1, 2).toString())
+                        name2 = (name2 == undefined) ? name2 : name2.username
+                        let name3 = client.users.cache.find(id => id == users.toString().split(`,`).slice(2, 3).toString())
+                        name3 = (name3 == undefined) ? name3 : name3.username
+                        let name4 = client.users.cache.find(id => id == users.toString().split(`,`).slice(3, 4).toString())
+                        name4 = (name4 == undefined) ? name4 : name4.username
+                        let name5 = client.users.cache.find(id => id == users.toString().split(`,`).slice(4, 5).toString())
+                        name5 = (name5 == undefined) ? name5 : name5.username
+                        let name6 = client.users.cache.find(id => id == users.toString().split(`,`).slice(5, 6).toString())
+                        name6 = (name6 == undefined) ? name6 : name6.username
+                        let name7 = client.users.cache.find(id => id == users.toString().split(`,`).slice(6, 7).toString())
+                        name7 = (name7 == undefined) ? name7 : name7.username
+                        let name8 = client.users.cache.find(id => id == users.toString().split(`,`).slice(7, 8).toString())
+                        name8 = (name8 == undefined) ? name8 : name8.username
+                        let name9 = client.users.cache.find(id => id == users.toString().split(`,`).slice(8, 9).toString())
+                        name9 = (name9 == undefined) ? name9 : name9.username
+                        let name10 = client.users.cache.find(id => id == users.toString().split(`,`).slice(9, 10).toString())
+                        name10 = (name10 == undefined) ? name10 : name10.username
+
+                        const embed = new Discord.EmbedBuilder()
+                            .setColor(`0xc5215d`)
+                            .setTitle(`Leaderboard (Top 10)`)
+                            .addFields({
+                                name: `1. ${name1}`,
+                                value: `${user1_}`
+                            }, {
+                                name: `2. ${name2}`,
+                                value: `${user2_}`
+                            }, {
+                                name: `3. ${name3}`,
+                                value: `${user3_}`
+                            }, {
+                                name: `4. ${name4}`,
+                                value: `${user4_}`
+                            }, {
+                                name: `5. ${name5}`,
+                                value: `${user5_}`
+                            }, {
+                                name: `6. ${name6}`,
+                                value: `${user6_}`
+                            }, {
+                                name: `7. ${name7}`,
+                                value: `${user7_}`
+                            }, {
+                                name: `8. ${name8}`,
+                                value: `${user8_}`
+                            }, {
+                                name: `9. ${name9}`,
+                                value: `${user9_}`
+                            }, {
+                                name: `10. ${name10}`,
+                                value: `${user10_}`
+                            })
+                        interaction.editReply({
+                            content: `leaderboard created`,
+                            embeds: [embed]
+                        }).catch(console.error)
+                    }, 100)
+                    winner4.push(winner3.sort((a, b) => a - b).toString())
+
+                    const l = winner4.toString().replace(/,/g, `*`).replace(/[0-9]/g, ``)
+
+                    const num = l.length + 1
+
+                    ten.push(winner4.toString().split(`,`).slice(num - 10, num - 9)).toString()
+                    nine.push(winner4.toString().split(`,`).slice(num - 9, num - 8)).toString()
+                    eight.push(winner4.toString().split(`,`).slice(num - 8, num - 7)).toString()
+                    seven.push(winner4.toString().split(`,`).slice(num - 7, num - 6)).toString()
+                    six.push(winner4.toString().split(`,`).slice(num - 6, num - 5)).toString()
+                    five.push(winner4.toString().split(`,`).slice(num - 5, num - 4)).toString()
+                    four.push(winner4.toString().split(`,`).slice(num - 4, num - 3)).toString()
+                    three.push(winner4.toString().split(`,`).slice(num - 3, num - 2)).toString()
+                    two.push(winner4.toString().split(`,`).slice(num - 2, num - 1)).toString()
+                    one.push(winner4.toString().split(`,`).slice(num - 1, num - 0)).toString()
+
+                    for (let i = 0; i < 10; i++) {
+                        const user = winner4.toString().split(`,`).slice(num - i - 1, num - i).toString()
+                        console.log(`user:`, user)
+                        if (user1.toString().includes(`exp = ${user}`)) {
+                            let length1 = user1.toString().split(`exp = ${user}`).slice(0, 1).toString().replace(/[0-9]/g, ``).replace(/[a-z]/g, ``).replace(/=/g, '').replace(/ /g, ``).toString().length
+                            console.log(length1, length1.length)
+                            let old_user = user1.toString().split(`exp = ${user}`).slice(0, 1).toString().replace(/lvl = /g, ``).replace(/ /g, ``).toString()
+                            let new_user = old_user.toString().split(`,`).slice(length1)
+                            console.log(old_user, `\nnew:`, new_user + `\n` + winner4.toString())
+                            users.push(new_user)
+                        } else if (user2.toString().includes(user)) {
+                            let length1 = user2.toString().split(`exp = ${user}`).slice(0, 1).toString().replace(/[0-9]/g, ``).replace(/[a-z]/g, ``).replace(/=/g, '').replace(/ /g, ``).toString().length
+                            console.log(length1, length1.length)
+                            let old_user = user2.toString().split(`exp = ${user}`).slice(0, 1).toString().replace(/lvl = /g, ``).replace(/ /g, ``).toString()
+                            let new_user = old_user.toString().split(`,`).slice(length1)
+                            console.log(old_user, `\nnew:`, new_user)
+                            users.push(new_user)
+                        }
+                    }
+                }, 600)
+            }, 800)
         }
     }
 })
@@ -3917,4 +3893,4 @@ client.on("messageCreate", (message) => {
     }
 })
 //client login  
-client.login(process.env.TOKEN)
+client.login(token.token)
